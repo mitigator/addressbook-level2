@@ -37,44 +37,35 @@ public interface ReadOnlyPerson {
      */
     default String getAsTextShowAll() {
         final StringBuilder builder = new StringBuilder();
-        final String detailIsPrivate = "(private) ";
-        builder.append(getName())
-                .append(" Phone: ");
-        if (getPhone().isPrivate()) {
-            builder.append(detailIsPrivate);
-        }
-        builder.append(getPhone())
-                .append(" Email: ");
-        if (getEmail().isPrivate()) {
-            builder.append(detailIsPrivate);
-        }
-        builder.append(getEmail())
-                .append(" Address: ");
-        if (getAddress().isPrivate()) {
-            builder.append(detailIsPrivate);
-        }
-        builder.append(getAddress())
-                .append(" Tags: ");
+        
+        builder.append(getPrintableString(getName(),getPhone(),
+        								  getEmail(), getAddress()));
+        		
+        builder.append(" Tags: ");
+    
+        
         for (Tag tag : getTags()) {
             builder.append(tag);
         }
         return builder.toString();
+    
     }
 
     /**
      * Formats a person as text, showing only non-private contact details.
+     * Remark: if getPrintable String is left out, weird stuff gets printed
      */
     default String getAsTextHidePrivate() {
         final StringBuilder builder = new StringBuilder();
-        builder.append(getName());
+        builder.append(getName().getPrintableString());
         if (!getPhone().isPrivate()) {
-            builder.append(" Phone: ").append(getPhone());
+            builder.append(" Phone: ").append(getPhone().getPrintableString());
         }
         if (!getEmail().isPrivate()) {
-            builder.append(" Email: ").append(getEmail());
+            builder.append(" Email: ").append(getEmail().getPrintableString());
         }
         if (!getAddress().isPrivate()) {
-            builder.append(" Address: ").append(getAddress());
+            builder.append(" Address: ").append(getAddress().getPrintableString());
         }
         builder.append(" Tags: ");
         for (Tag tag : getTags()) {
@@ -82,4 +73,18 @@ public interface ReadOnlyPerson {
         }
         return builder.toString();
     }
+    
+    /*
+     * Builds a string of person's details format: Name, Phone,Email , Address
+     */
+    
+    default String getPrintableString(Printable... printables){
+    	final StringBuilder builder = new StringBuilder();
+    	
+    	for (Printable value : printables)
+    		builder.append(value.getPrintableString());
+    	
+    	return builder.toString();
+    }	
+    
 }
